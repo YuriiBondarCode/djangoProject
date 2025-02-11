@@ -27,14 +27,14 @@ Create superuser
 
 ``` python manage.py createsuperuser```
 
-Get the Token
+Get the Simple JWT Token
 
 ``` 
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token 
-user = User.objects.get(username="username") 
-token, created = Token.objects.get_or_create(user=user)
-print(token.key)
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "username", "password": "password"}' \
+  http://localhost:8000/api/token/
 ``` 
 
 
@@ -42,6 +42,6 @@ Navigate to:
 
 API (DRF): ```http://127.0.0.1:8000/api/```
 
-Swagger UI: ```http://127.0.0.1:8000/api/schema/swagger-ui/``` ( Authenticate using: "Token + {token}" from get the token section)
+Swagger UI: ```http://127.0.0.1:8000/api/schema/swagger-ui/``` ( Authenticate using token from get the token section)
 
 Admin: ```http://127.0.0.1:8000/admin/ ```
