@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
@@ -21,6 +22,9 @@ class MessageViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
 
     @action(detail=False, methods=["get"], url_path="get-unread/(?P<user_id>\w+)", url_name="get-unread")
     def get_unread(self, *args, user_id=None, **kwargs):
+        if not user_id.isdigit():
+            return Response(data={"detail": "Please provide valid user id"}, status=status.HTTP_400_BAD_REQUEST)
+
         count_of_unread_messages = len(self.get_queryset().filter(thread__user=user_id,
                                                                   is_read=False))
         return Response(data={"unread_messages": count_of_unread_messages})

@@ -1,5 +1,5 @@
 from django.db.models import QuerySet
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
 from rest_framework.pagination import LimitOffsetPagination
@@ -18,6 +18,9 @@ class ThreadViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
 
     @action(detail=False, methods=["get"], url_path="(?P<user_id>\w+)", url_name="users")
     def get_by_user(self, request, user_id=None):
+        if not user_id.isdigit():
+            return Response(data={"detail": "Please provide valid user id"}, status=status.HTTP_400_BAD_REQUEST)
+
         instances: QuerySet[Thread] = self.get_queryset().filter(user=user_id)
         page = self.paginate_queryset(instances)
         serializer = self.get_serializer(page if page is not None else instances, many=True)
